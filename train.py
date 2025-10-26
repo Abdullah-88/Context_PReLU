@@ -160,7 +160,7 @@ def test(dataloader, model, loss_fn):
 
 
 
-logname = "/home/abdullah/Desktop/Context_PReLU/Experiments_cifar10/logs_contextprelu/logs_cifar10.csv"
+logname = "/PATH/Context_PReLU/Experiments_cifar10/logs_contextprelu/logs_cifar10.csv"
 if not os.path.exists(logname):
   with open(logname, 'w') as logfile:
     logwriter = csv.writer(logfile, delimiter=',')
@@ -181,7 +181,7 @@ print("Done!")
 
 
 
-path = "/home/abdullah/Desktop/Context_PReLU/Experiments_cifar10/weights_contextprelu"
+path = "/PATH/Context_PReLU/Experiments_cifar10/weights_contextprelu"
 model_name = "Context_PReLUImageClassification_cifar10"
 torch.save(model.state_dict(), f"{path}/{model_name}.pth")
 print(f"Saved Model State to {path}/{model_name}.pth ")
