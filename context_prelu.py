@@ -1,7 +1,23 @@
 import torch
 from torch import nn
 
+class MLP(nn.Module):
 
+    def __init__(self,dim):
+        super().__init__()
+        self.proj_1 =  nn.Linear(dim,dim,bias=False)
+        self.proj_2 =  nn.Linear(dim,dim,bias=False)        
+        self.gelu = nn.GELU()
+       
+             	   
+    def forward(self, x):
+       
+        x = self.proj_1(x)
+        x = self.gelu(x)          
+        x = self.proj_2(x)
+        
+                          
+        return x
         
 
 class Context_PReLUBlock(nn.Module):
@@ -12,7 +28,7 @@ class Context_PReLUBlock(nn.Module):
          
         self.context_prelu = nn.PReLU(d_model * num_tokens)
         self.token_norm = nn.LayerNorm(d_model)
-      
+        self.local_mapping = MLP(d_model)
                         
         
     def forward(self, x):
@@ -32,7 +48,12 @@ class Context_PReLUBlock(nn.Module):
         readout = self.context_prelu(context)        
         
         x = readout.reshape([dim0,dim1,dim2])
-        
+            
+        x = x + residual
+            
+        residual = x
+
+        x = self.local_mapping(x)
                                           
         out = x + residual
         
