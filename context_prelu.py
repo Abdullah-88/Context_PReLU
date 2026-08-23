@@ -3,10 +3,10 @@ from torch import nn
 
 class MLP(nn.Module):
 
-    def __init__(self,dim):
+    def __init__(self, dim, hidden_dim):
         super().__init__()
-        self.proj_1 =  nn.Linear(dim,dim,bias=False)
-        self.proj_2 =  nn.Linear(dim,dim,bias=False)        
+        self.proj_1 =  nn.Linear(dim, hidden_dim, bias=False)
+        self.proj_2 =  nn.Linear(hidden_dim, dim, bias=False)        
         self.gelu = nn.GELU()
                     	   
     def forward(self, x):
@@ -19,12 +19,12 @@ class MLP(nn.Module):
         
 class Context_PReLUBlock(nn.Module):
 
-    def __init__(self, d_model, num_tokens):
+    def __init__(self, d_model, d_ffn, num_tokens):
         super().__init__()
                 
         self.context_prelu = nn.PReLU(d_model * num_tokens)
         self.token_norm = nn.LayerNorm(d_model)
-        self.local_mapping = MLP(d_model)
+        self.local_mapping = MLP(d_model, d_ffn)
                                 
     def forward(self, x):
                                  
@@ -52,11 +52,11 @@ class Context_PReLUBlock(nn.Module):
         return out
 
 class Context_PReLU(nn.Module):
-    def __init__(self, d_model, num_tokens, num_layers):
+    def __init__(self, d_model, d_ffn, num_tokens, num_layers):
         super().__init__()
         
         self.model = nn.Sequential(
-            *[Context_PReLUBlock(d_model, num_tokens) for _ in range(num_layers)]
+            *[Context_PReLUBlock(d_model, d_ffn, num_tokens) for _ in range(num_layers)]
         )
 
     def forward(self, x):
