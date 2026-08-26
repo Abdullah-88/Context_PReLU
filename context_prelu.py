@@ -5,8 +5,8 @@ class MLP(nn.Module):
 
     def __init__(self, dim, hidden_dim):
         super().__init__()
-        self.proj_1 =  nn.Linear(dim, hidden_dim, bias=False)
-        self.proj_2 =  nn.Linear(hidden_dim, dim, bias=False)        
+        self.proj_1 =  nn.Linear(dim, hidden_dim, bias = False)
+        self.proj_2 =  nn.Linear(hidden_dim, dim, bias = False)        
         self.gelu = nn.GELU()
                     	   
     def forward(self, x):
@@ -35,11 +35,11 @@ class Context_PReLUBlock(nn.Module):
         dim0 = x.shape[0]
         dim1 = x.shape[1]
         dim2 = x.shape[2]
-        context = x.reshape([dim0,dim1*dim2])
+        context = x.reshape([dim0, dim1 * dim2])
                                
         readout = self.context_prelu(context)        
         
-        x = readout.reshape([dim0,dim1,dim2])
+        x = readout.reshape([dim0, dim1, dim2])
             
         x = x + residual
             
